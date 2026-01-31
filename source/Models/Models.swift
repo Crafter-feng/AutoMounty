@@ -1,6 +1,6 @@
 import Foundation
 
-public struct MountProfile: Codable, Identifiable, Hashable {
+public struct MountProfile: Codable, Identifiable, Hashable, Sendable {
     public var id: UUID = UUID()
     public var serverURL: String // smb://user@server/share
     public var mountPoint: String // Optional: local path to mount at
@@ -131,7 +131,7 @@ public struct MountProfile: Codable, Identifiable, Hashable {
 
 // MARK: - Automation Types
 
-public enum ScriptEvent: String, Codable, CaseIterable, Identifiable {
+public enum ScriptEvent: String, Codable, CaseIterable, Identifiable, Sendable {
     case preMount = "Mounting"
     case mounted = "Mounted"
     case preUnmount = "Unmounting"
@@ -151,7 +151,7 @@ public enum ScriptEvent: String, Codable, CaseIterable, Identifiable {
     }
 }
 
-public enum AutomationType: String, Codable, CaseIterable, Identifiable {
+public enum AutomationType: String, Codable, CaseIterable, Identifiable, Sendable {
     case shell = "Shell Script"
     case app = "Application"
     case wol = "Wake On LAN"
@@ -167,7 +167,7 @@ public enum AutomationType: String, Codable, CaseIterable, Identifiable {
     }
 }
 
-public struct AutomationConfig: Codable, Identifiable, Hashable {
+public struct AutomationConfig: Codable, Identifiable, Hashable, Sendable {
     public var id = UUID()
     public var type: AutomationType = .shell
     public var enabled: Bool = true
@@ -210,7 +210,7 @@ struct OldScriptConfig: Codable {
 // No, I'm handling it in init(from:).
 // But wait, WOLConfig might be used in other files.
 // I will keep it but mark as deprecated or just use it for migration.
-public struct WOLConfig: Codable, Hashable {
+public struct WOLConfig: Codable, Hashable, Sendable {
     public var macAddress: String = ""
     public var broadcastAddress: String = "255.255.255.255"
     public var port: UInt16 = 9
@@ -224,7 +224,7 @@ public struct WOLConfig: Codable, Hashable {
     }
 }
 
-public enum RuleType: String, Codable, CaseIterable, Identifiable {
+public enum RuleType: String, Codable, CaseIterable, Identifiable, Sendable {
     case wifi = "WiFi Connection"
     case vpn = "VPN Connection"
     case app = "Running Application"
@@ -240,7 +240,7 @@ public enum RuleType: String, Codable, CaseIterable, Identifiable {
     }
 }
 
-public enum RuleOperator: String, Codable, CaseIterable, Identifiable {
+public enum RuleOperator: String, Codable, CaseIterable, Identifiable, Sendable {
     case equals = "is"
     case doesNotEqual = "is not"
     case contains = "contains"
@@ -256,7 +256,7 @@ public enum RuleOperator: String, Codable, CaseIterable, Identifiable {
     }
 }
 
-public enum RuleLogic: String, Codable, CaseIterable, Identifiable {
+public enum RuleLogic: String, Codable, CaseIterable, Identifiable, Sendable {
     case all = "All"
     case any = "Any"
     
@@ -270,7 +270,7 @@ public enum RuleLogic: String, Codable, CaseIterable, Identifiable {
     }
 }
 
-public struct MountRule: Codable, Identifiable, Hashable {
+public struct MountRule: Codable, Identifiable, Hashable, Sendable {
     public var id: UUID = UUID()
     public var type: RuleType
     public var `operator`: RuleOperator

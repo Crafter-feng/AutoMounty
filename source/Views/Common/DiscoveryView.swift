@@ -120,16 +120,18 @@ struct DiscoveryView: View {
         
         // Use shared service
         MountyManager.shared.importDiscoveredServer(url: url, bonjourHostname: server.name) { result in
-            self.connectingServerId = nil
-            
-            switch result {
-            case .success(let profile):
-                self.finishAdding(profile: profile)
+            Task { @MainActor in
+                self.connectingServerId = nil
                 
-            case .failure(let error):
-                // Error logged by service
-                // Maybe show alert? For now just log.
-                print("Error adding server: \(error)")
+                switch result {
+                case .success(let profile):
+                    self.finishAdding(profile: profile)
+                    
+                case .failure(let error):
+                    // Error logged by service
+                    // Maybe show alert? For now just log.
+                    print("Error adding server: \(error)")
+                }
             }
         }
     }

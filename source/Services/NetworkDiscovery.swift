@@ -2,6 +2,7 @@ import Foundation
 import AutoMountyModel
 import Network
 
+@MainActor
 class NetworkDiscovery: NSObject, ObservableObject, NetServiceDelegate {
     static let shared = NetworkDiscovery()
     
@@ -69,10 +70,10 @@ class NetworkDiscovery: NSObject, ObservableObject, NetServiceDelegate {
         browser.browseResultsChangedHandler = { [weak self] results, changes in
             guard let self = self else { return }
             
-            for result in results {
-                if case .service(let name, let type, let domain, _) = result.endpoint {
-                    // Check if already discovered
-                    DispatchQueue.main.async {
+            Task { @MainActor in
+                for result in results {
+                    if case .service(let name, let type, let domain, _) = result.endpoint {
+                        // Check if already discovered
                         if !self.discoveredServers.contains(where: { $0.name == name && $0.type == type }) {
                             let server = DiscoveredServer(name: name, type: type, domain: domain)
                             self.discoveredServers.append(server)
@@ -98,41 +99,50 @@ class NetworkDiscovery: NSObject, ObservableObject, NetServiceDelegate {
     
     // MARK: - NetServiceDelegate
     
-    func netServiceDidResolveAddress(_ sender: NetService) {
-        if let addresses = sender.addresses, !addresses.isEmpty {
-            for address in addresses {
-                let data = address as NSData
-                var storage = sockaddr_storage()
-                data.getBytes(&storage, length: MemoryLayout<sockaddr_storage>.size)
-                
-                if storage.ss_family == sa_family_t(AF_INET) {
-                    let ip = String(cString: inet_ntoa(withUnsafePointer(to: &storage) {
-                        $0.withMemoryRebound(to: sockaddr_in.self, capacity: 1) {
-                            $0.pointee.sin_addr
-                        }
-                    }))
+    nonisolated func netServiceDidResolveAddress(_ sender: NetService) {
+        let name = sender.name
+        let type = sender.type
+        let addresses = sender.addresses ?? []
+        
+        Task { @MainActor in
+            if !addresses.isEmpty {
+                for address in addresses {
+                    let data = address as NSData
+                    var storage = sockaddr_storage()
+                    data.getBytes(&storage, length: MemoryLayout<sockaddr_storage>.size)
                     
-                    Logger.debug("Resolved IP for \(sender.name): \(ip)")
-                    
-                    DispatchQueue.main.async {
-                        if let index = self.discoveredServers.firstIndex(where: { $0.name == sender.name && $0.type == sender.type }) {
+                    if storage.ss_family == sa_family_t(AF_INET) {
+                        let ip = String(cString: inet_ntoa(withUnsafePointer(to: &storage) {
+                            $0.withMemoryRebound(to: sockaddr_in.self, capacity: 1) {
+                                $0.pointee.sin_addr
+                            }
+                        }))
+                        
+                        Logger.debug("Resolved IP for \(name): \(ip)")
+                        
+                        if let index = self.discoveredServers.firstIndex(where: { $0.name == name && $0.type == type }) {
                             self.discoveredServers[index].ipAddress = ip
                         }
+                        break // Prefer IPv4, found one, stop
                     }
-                    break // Prefer IPv4, found one, stop
                 }
             }
-        }
-        
-        if let index = activeResolutions.firstIndex(of: sender) {
-            activeResolutions.remove(at: index)
+            
+            if let index = self.activeResolutions.firstIndex(where: { $0.name == name && $0.type == type }) {
+                self.activeResolutions.remove(at: index)
+            }
         }
     }
     
-    func netService(_ sender: NetService, didNotResolve errorDict: [String : NSNumber]) {
-        Logger.error("Failed to resolve IP for \(sender.name): \(errorDict)")
-        if let index = activeResolutions.firstIndex(of: sender) {
-            activeResolutions.remove(at: index)
+    nonisolated func netService(_ sender: NetService, didNotResolve errorDict: [String : NSNumber]) {
+        let name = sender.name
+        let type = sender.type
+        
+        Task { @MainActor in
+            Logger.error("Failed to resolve IP for \(name): \(errorDict)")
+            if let index = self.activeResolutions.firstIndex(where: { $0.name == name && $0.type == type }) {
+                self.activeResolutions.remove(at: index)
+            }
         }
     }
     

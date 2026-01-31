@@ -90,6 +90,8 @@
 "SSID" = "SSID";
 "Value" = "值";
 "Select" = "选择";
+"Type" = "类型";
+"Condition" = "条件";
 
 /* Network Discovery */
 "Network Discovery" = "网络发现";

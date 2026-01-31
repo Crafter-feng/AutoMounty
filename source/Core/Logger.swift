@@ -19,6 +19,7 @@ enum LogLevel: Int, CaseIterable, Identifiable {
     }
 }
 
+@MainActor
 class Logger: ObservableObject {
     static let shared = Logger()
     
@@ -89,15 +90,21 @@ class Logger: ObservableObject {
         NSWorkspace.shared.activateFileViewerSelecting([logFileURL])
     }
     
-    static func error(_ message: String) {
-        shared.log(message, level: .error)
+    nonisolated static func error(_ message: String) {
+        Task { @MainActor in
+            shared.log(message, level: .error)
+        }
     }
     
-    static func info(_ message: String) {
-        shared.log(message, level: .info)
+    nonisolated static func info(_ message: String) {
+        Task { @MainActor in
+            shared.log(message, level: .info)
+        }
     }
     
-    static func debug(_ message: String) {
-        shared.log(message, level: .debug)
+    nonisolated static func debug(_ message: String) {
+        Task { @MainActor in
+            shared.log(message, level: .debug)
+        }
     }
 }

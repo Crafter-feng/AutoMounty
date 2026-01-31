@@ -384,7 +384,7 @@ class MountyManager: ObservableObject {
     ///   - bonjourHostname: Optional Bonjour hostname if discovered via mDNS.
     ///   - mountPoint: Optional specific local mount point.
     ///   - completion: Callback with the result (Success with Profile, or Failure with Error).
-    func importDiscoveredServer(url: String, bonjourHostname: String? = nil, mountPoint: String = "", completion: @escaping (Result<MountProfile, Error>) -> Void) {
+    func importDiscoveredServer(url: String, bonjourHostname: String? = nil, mountPoint: String = "", completion: @escaping @Sendable (Result<MountProfile, Error>) -> Void) {
         
         // 1. Check for existing profile by Bonjour Hostname (if provided)
         if let hostname = bonjourHostname,

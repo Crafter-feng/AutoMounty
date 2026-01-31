@@ -2,6 +2,14 @@
 
 set -e pipefail
 
+# 0. Run Tests
+echo "Running Tests..."
+swift test
+if [ $? -ne 0 ]; then
+    echo "Tests failed! Aborting build."
+    exit 1
+fi
+
 # 1. Build the executable
 echo "Building AutoMounty..."
 swift build --disable-sandbox -c release

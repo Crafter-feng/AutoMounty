@@ -395,26 +395,24 @@ struct ServerConfigurationView: View {
                 }
             }
             
-            DispatchQueue.main.async {
-                isFetchingShares = false
-                if let shares = finalShares {
-                    self.availableShares = shares.sorted()
-                    if shares.isEmpty {
-                        self.fetchErrorMsg = NSLocalizedString("No shares found.", comment: "No SMB Shares")
-                        self.showFetchError = true
-                    }
-                } else {
-                    self.availableShares = []
-                    if let msg = errorMsg {
-                        self.fetchErrorMsg = msg
-                        self.showFetchError = true
-                    }
+            isFetchingShares = false
+            if let shares = finalShares {
+                self.availableShares = shares.sorted()
+                if shares.isEmpty {
+                    self.fetchErrorMsg = NSLocalizedString("No shares found.", comment: "No SMB Shares")
+                    self.showFetchError = true
+                }
+            } else {
+                self.availableShares = []
+                if let msg = errorMsg {
+                    self.fetchErrorMsg = msg
+                    self.showFetchError = true
                 }
             }
         }
     }
     
-    private func runSMBUtil(host: String, username: String, options: [String]) async -> [String]? {
+    nonisolated private func runSMBUtil(host: String, username: String, options: [String]) async -> [String]? {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/smbutil")
         
@@ -457,7 +455,7 @@ struct ServerConfigurationView: View {
         }
     }
     
-    private func parseSMBOutput(_ output: String) -> [String] {
+    nonisolated private func parseSMBOutput(_ output: String) -> [String] {
         // Output format:
         // Share        Type       Comments
         // -------------------------------
@@ -491,6 +489,7 @@ struct ServerConfigurationView: View {
         return shares
     }
     
+    @MainActor
     private func isShareConfigured(_ sharePath: String) -> Bool {
         let cleanShare = sharePath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         
