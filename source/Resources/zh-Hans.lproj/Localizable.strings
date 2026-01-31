@@ -67,7 +67,7 @@
 /* Rules */
 "Mount Rules" = "挂载规则";
 "Mount shares if" = "当";
-"of the following are true" = "条件满足时";
+"of the following are true:" = "条件满足时：";
 "All" = "所有";
 "Any" = "任意";
 "WiFi Connection" = "WiFi 连接";
@@ -117,8 +117,25 @@
 "NFS" = "NFS";
 "WebDAV" = "WebDAV";
 "FTP (Read Only)" = "FTP (只读)";
+"FTP" = "FTP";
 "Other" = "其他";
 
 /* SMB Fetch Errors */
 "Could not list shares. Please ensure you have connected to this server at least once to save credentials, or that Guest access is enabled." = "无法列出共享。请确保您至少连接过一次此服务器以保存凭据，或者已启用访客访问。";
 "No shares found." = "未找到共享。";
+
+/* Settings */
+"Open Main Window on Launch" = "启动时打开主界面";
+"Show Icon in Dock" = "在程序坞显示图标";
+"Settings" = "设置";
+
+/* Automation */
+"No automation tasks configured" = "未配置自动化任务";
+"Add Task" = "添加任务";
+"Select the type of automation" = "选择自动化类型";
+"Run On:" = "运行于:";
+"Select when this automation should run" = "选择何时运行此自动化";
+
+/* Server Config */
+"Hide Advanced Options" = "隐藏高级选项";
+"Show Advanced Options" = "显示高级选项";

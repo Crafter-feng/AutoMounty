@@ -63,7 +63,7 @@
 /* Rules */
 "Mount Rules" = "Mount Rules";
 "Mount shares if" = "Mount shares if";
-"of the following are true" = "of the following are true";
+"of the following are true:" = "of the following are true:";
 "All" = "All";
 "Any" = "Any";
 "WiFi Connection" = "WiFi Connection";
@@ -113,8 +113,25 @@
 "NFS" = "NFS";
 "WebDAV" = "WebDAV";
 "FTP (Read Only)" = "FTP (Read Only)";
+"FTP" = "FTP";
 "Other" = "Other";
 
 /* SMB Fetch Errors */
 "Could not list shares. Please ensure you have connected to this server at least once to save credentials, or that Guest access is enabled." = "Could not list shares. Please ensure you have connected to this server at least once to save credentials, or that Guest access is enabled.";
 "No shares found." = "No shares found.";
+
+/* Settings */
+"Open Main Window on Launch" = "Open Main Window on Launch";
+"Show Icon in Dock" = "Show Icon in Dock";
+"Settings" = "Settings";
+
+/* Automation */
+"No automation tasks configured" = "No automation tasks configured";
+"Add Task" = "Add Task";
+"Select the type of automation" = "Select the type of automation";
+"Run On:" = "Run On:";
+"Select when this automation should run" = "Select when this automation should run";
+
+/* Server Config */
+"Hide Advanced Options" = "Hide Advanced Options";
+"Show Advanced Options" = "Show Advanced Options";

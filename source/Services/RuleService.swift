@@ -1,4 +1,5 @@
 import Foundation
+import AutoMountyModel
 import AppKit
 import CoreWLAN
 import SystemConfiguration.CaptiveNetwork

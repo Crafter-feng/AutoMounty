@@ -1,4 +1,5 @@
 import Foundation
+import AutoMountyModel
 import NetFS
 import AppKit
 

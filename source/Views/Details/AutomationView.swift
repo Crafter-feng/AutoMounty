@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoMountyModel
 import AppKit
 
 struct AutomationView: View {

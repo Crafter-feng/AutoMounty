@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoMountyModel
 
 struct Metrics {
     // Only keeping metrics used by other views

@@ -1,4 +1,5 @@
 import Foundation
+import AutoMountyModel
 import AppKit
 
 struct AutomationService {

@@ -1,4 +1,5 @@
 import Foundation
+import AutoMountyModel
 import Network
 
 class NetworkDiscovery: NSObject, ObservableObject, NetServiceDelegate {

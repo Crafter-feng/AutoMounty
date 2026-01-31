@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoMountyModel
 
 struct DiscoveryView: View {
     @StateObject private var discovery = NetworkDiscovery.shared

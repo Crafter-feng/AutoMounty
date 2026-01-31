@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoMountyModel
 
 struct ContentView: View {
     @ObservedObject var config = ConfigManager.shared

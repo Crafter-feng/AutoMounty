@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoMountyModel
 
 struct RuleConfigurationView: View {
     @Binding var profile: MountProfile

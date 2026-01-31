@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoMountyModel
 
 struct SettingsView: View {
     @ObservedObject var logger = Logger.shared

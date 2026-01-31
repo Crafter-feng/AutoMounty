@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoMountyModel
 import AppKit
 
 // MARK: - Server Configuration Components
@@ -69,7 +70,7 @@ struct ServerConfigurationView: View {
                     }
                 } label: {
                     HStack(spacing: 4) {
-                        Text(isDetailsExpanded ? "Hide Advanced Options" : "Show Advanced Options")
+                        Text(isDetailsExpanded ? LocalizedStringKey("Hide Advanced Options") : LocalizedStringKey("Show Advanced Options"))
                         Image(systemName: "chevron.right")
                             .rotationEffect(.degrees(isDetailsExpanded ? 90 : 0))
                     }

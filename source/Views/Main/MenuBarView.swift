@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoMountyModel
 
 struct MenuBarView: View {
     @ObservedObject var config = ConfigManager.shared

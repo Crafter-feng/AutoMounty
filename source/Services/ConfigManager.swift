@@ -1,4 +1,5 @@
 import Foundation
+import AutoMountyModel
 
 @MainActor
 class ConfigManager: ObservableObject {

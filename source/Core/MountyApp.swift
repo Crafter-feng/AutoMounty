@@ -1,4 +1,5 @@
 import SwiftUI
+import AutoMountyModel
 
 @main
 struct MountyApp: App {
