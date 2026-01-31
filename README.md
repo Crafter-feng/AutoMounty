@@ -6,9 +6,12 @@ AutoMounty 是一款 macOS 菜单栏应用，用于自动挂载局域网共享�
 
 - 共享挂载管理：添加、编辑、删除共享配置
 - 自动挂载规则：WiFi / VPN / 运行中的应用，支持 All/Any 逻辑
+- 自动化任务：支持 Shell 脚本、运行应用、网络唤醒 (WOL)
+- 事件触发：支持挂载前/后、卸载前/后、失败时执行自定义动作
 - 手动卸载保护：手动卸载后不会自动重挂载
 - 自动挂载防抖：网络抖动时避免重复挂载
 - 菜单栏操作：快速查看状态、挂载/卸载、打开 Finder
+- 界面定制：可配置是否在 Dock 显示图标、启动时是否打开主窗口
 - Bonjour 发现：扫描局域网 SMB/AFP 服务器并一键导入
 - Bonjour IP 自动更新：在 IP 变化时自动更新配置
 - 启动项管理：支持开机自启
@@ -86,6 +89,13 @@ swift build --disable-sandbox -c release
 
 无规则时会视为“自动挂载开启且无需网络条件”。
 
+### 自动化与脚本
+
+支持为每个共享配置自动化任务：
+
+- **类型**：Shell 脚本、应用程序、Wake On LAN (WOL)
+- **触发时机**：挂载前 (Mounting)、挂载成功 (Mounted)、卸载前 (Unmounting)、卸载成功 (Unmounted)、挂载失败 (Mount Failed)
+
 ### 菜单栏快捷操作
 
 - 快速查看挂载状态
@@ -96,6 +106,8 @@ swift build --disable-sandbox -c release
 ### 设置
 
 - Launch at Login：开机自启
+- Open Main Window on Launch：启动时打开主界面
+- Show Icon in Dock：在 Dock 显示图标（需重启生效）
 - Auto Update Server IP via Bonjour：自动更新 Bonjour 发现的 IP
 - Log Level：日志级别
 - Open Log Folder：打开日志目录
@@ -120,14 +132,14 @@ swift build --disable-sandbox -c release
 
 ## 项目结构（简要）
 
-- `source/MountyApp.swift` 应用入口与窗口定义
-- `source/ContentView.swift` 主界面与侧边栏
-- `source/RuleEditorView.swift` 规则编辑与挂载配置
-- `source/MountyMonitor.swift` 网络监控与自动挂载决策
-- `source/MountyManager.swift` 挂载/卸载与状态管理
-- `source/NetworkDiscovery.swift` Bonjour 发现与解析
-- `source/ProfileAddingService.swift` 添加共享的校验与预挂载
-- `source/Logger.swift` 日志系统
+- `source/Core/MountyApp.swift` 应用入口与生命周期
+- `source/Views/Main/ContentView.swift` 主界面与侧边栏
+- `source/Views/Details/` 详情页、规则配置、自动化配置
+- `source/Services/MountyManager.swift` 挂载/卸载与状态管理
+- `source/Services/MountyMonitor.swift` 网络监控与自动挂载决策
+- `source/Services/NetworkDiscovery.swift` Bonjour 发现与解析
+- `source/Services/AutomationService.swift` 自动化任务执行
+- `source/Core/Logger.swift` 日志系统
 
 ## 常见问题
 
@@ -138,4 +150,3 @@ macOS 获取 SSID 可能需要位置权限，确保系统权限允许应用访�
 ### 为什么会出现重复挂载
 
 已加入“挂载中状态 + 冷却时间”双重防护，避免网络变化时重复挂载。
-
