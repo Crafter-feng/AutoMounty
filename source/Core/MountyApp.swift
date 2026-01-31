@@ -29,11 +29,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 或者依赖 LSUIElement 配合。
         
         // 我们在 Info.plist 中设置 LSUIElement 为 true，应用启动时不会显示窗口
-        // 但为了兼容开发模式，这里强制设为 accessory (无 Dock 图标)
-        NSApp.setActivationPolicy(.accessory)
         
         // Set default preferences
-        UserDefaults.standard.register(defaults: ["AutoUpdateBonjourIP": true])
+        UserDefaults.standard.register(defaults: [
+            "AutoUpdateBonjourIP": true,
+            "LaunchOpenMainWindow": true,
+            "ShowDockIcon": true
+        ])
+        
+        // Handle Dock Icon preference
+        let showDockIcon = UserDefaults.standard.bool(forKey: "ShowDockIcon")
+        if showDockIcon {
+            NSApp.setActivationPolicy(.regular)
+        } else {
+            NSApp.setActivationPolicy(.accessory)
+        }
+        
+        // Handle Open Main Window preference
+        if UserDefaults.standard.bool(forKey: "LaunchOpenMainWindow") {
+            // Delay slightly to ensure app is ready to handle URL
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                if let url = URL(string: "mounty://main") {
+                    NSWorkspace.shared.open(url)
+                }
+            }
+        }
         
         // Scan for existing network mounts
         MountyManager.shared.scanAndImportMounts()

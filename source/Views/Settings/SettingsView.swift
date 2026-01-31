@@ -24,6 +24,23 @@ struct SettingsView: View {
                         set: { systemInfo.setLaunchAtLoginEnabled($0) }
                     ))
                     
+                    Toggle("Open Main Window on Launch", isOn: Binding(
+                        get: { UserDefaults.standard.bool(forKey: "LaunchOpenMainWindow") },
+                        set: { UserDefaults.standard.set($0, forKey: "LaunchOpenMainWindow") }
+                    ))
+                    
+                    Toggle("Show Icon in Dock", isOn: Binding(
+                        get: { UserDefaults.standard.bool(forKey: "ShowDockIcon") },
+                        set: { 
+                            UserDefaults.standard.set($0, forKey: "ShowDockIcon")
+                            let policy: NSApplication.ActivationPolicy = $0 ? .regular : .accessory
+                            NSApp.setActivationPolicy(policy)
+                            if $0 {
+                                NSApp.activate(ignoringOtherApps: true)
+                            }
+                        }
+                    ))
+                    
                     Toggle("Auto Update Server IP via Bonjour", isOn: Binding(
                         get: { UserDefaults.standard.bool(forKey: "AutoUpdateBonjourIP") },
                         set: { UserDefaults.standard.set($0, forKey: "AutoUpdateBonjourIP") }

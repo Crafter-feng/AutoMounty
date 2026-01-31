@@ -1,22 +1,80 @@
-# This workflow will build a Swift project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
-
-name: Swift
+name: Build and Release
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    tags:
+      - '*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  build:
-
-    runs-on: macos-latest
-
+  testwjj:
+    name: Test
+    runs-on: macos-14
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: swift test -v
+
+  build-dmg:
+    needs: testwjj
+    name: Build DMG
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build App
+        run: |
+          echo "Building AutoMounty..."
+          # Build specifically for arm64 as we are on macOS 14 (Apple Silicon)
+          swift build -c release --arch arm64
+          
+          # Get bin path
+          BIN_PATH=$(swift build -c release --arch arm64 --show-bin-path)
+          echo "Binary path: $BIN_PATH"
+          
+          # Define paths
+          APP_NAME="AutoMounty.app"
+          CONTENTS_DIR="$APP_NAME/Contents"
+          MACOS_DIR="$CONTENTS_DIR/MacOS"
+          RESOURCES_DIR="$CONTENTS_DIR/Resources"
+          
+          # Create App Bundle Structure
+          rm -rf "$APP_NAME"
+          mkdir -p "$MACOS_DIR"
+          mkdir -p "$RESOURCES_DIR"
+          
+          # Copy Executable, Info.plist and Resources
+          cp "$BIN_PATH/AutoMounty" "$MACOS_DIR/"
+          cp "Info.plist" "$CONTENTS_DIR/"
+          if [ -d "source/Resources" ]; then
+            cp -r source/Resources/* "$RESOURCES_DIR/"
+          fi
+          
+          # Sign the App (Ad-hoc)
+          codesign --force --deep --sign - "$APP_NAME"
+          
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Create DMG
+        run: |
+          test -f AutoMounty.dmg && rm AutoMounty.dmg
+          create-dmg \
+            --volname "AutoMounty Installer" \
+            --window-pos 200 120 \
+            --window-size 800 400 \
+            --icon-size 100 \
+            --icon "AutoMounty.app" 200 190 \
+            --hide-extension "AutoMounty.app" \
+            --app-drop-link 600 185 \
+            "AutoMounty.dmg" \
+            "AutoMounty.app"
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: AutoMounty.dmg

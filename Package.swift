@@ -13,10 +13,16 @@ let package = Package(
         .executable(name: "AutoMounty", targets: ["AutoMounty"])
     ],
     targets: [
+        .target(
+            name: "AutoMountyModel",
+            dependencies: [],
+            path: "source/Models"
+        ),
         .executableTarget(
             name: "AutoMounty",
-            dependencies: [],
+            dependencies: ["AutoMountyModel"],
             path: "source",
+            exclude: ["Models"],
             resources: [
                 .process("Resources")
             ],
@@ -24,6 +30,10 @@ let package = Package(
                 .linkedFramework("NetFS"),
                 .linkedFramework("CoreWLAN")
             ]
+        ),
+        .testTarget(
+            name: "AutoMountyTests",
+            dependencies: ["AutoMountyModel"]
         )
     ]
 )
